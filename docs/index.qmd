@@ -1,0 +1,67 @@
+---
+title: "Exploring Global flows and rates of international migrantion of scholars"
+author: "Thiago Almeida"
+format: html
+---
+
+```{r libraries}
+#| message: false
+#| include: false
+
+# Loading packages that we need to use
+library(tidyverse)
+```
+
+Let's use Scopus database to explore some potencialities of Quarto.
+
+This database can be accessed in the main GitHub page from the project ([clicking here][https://github.com/MPIDR/Global-flows-and-rates-of-international-migration-of-scholars]).
+
+```{r load_data}
+#| message: false
+#| include: false
+
+# Loading data from SCOPUS database
+data <- read_csv("../data_processed/scopus_2024_V1_scholarlymigration_countryflows_enriched.csv")
+
+```
+
+The database is structured such as is possible to see below:
+
+```{r}
+head(data)
+```
+
+## Flows over time
+
+One of the possible questions to be answered is how is the behaviours of these flows over time when we think about outflows. The fist step is to analyze the outflows based on the region of flow origin over time. The graphic below describe this relationship.
+
+```{r}
+#| echo: false
+
+tab <- data %>% 
+  summarise(
+    n = sum(n_migrations),
+    .by = c(year, regionfrom)
+  )
+
+tab %>% 
+  ggplot() +
+  aes(x = year, y = n, color = as.factor(regionfrom), group = as.factor(regionfrom)) %>% 
+  geom_line() +
+  scale_x_continuous(breaks = seq(min(tab$year)-1,max(tab$year)+1,2)) +
+  theme_minimal() +
+  labs(
+    color = "Region of origin",
+    x = "Year",
+    y = "Number of migrant flows",
+    title = "Scholar migrant flows by origin regions over time - World, 1998-2018.",
+    caption = "MPIDR, Scholarly Migration Database."
+  ) +
+  theme(
+    legend.title = element_text(face = "bold"),
+    plot.title = element_text(face = "bold")
+  )
+
+```
+
+

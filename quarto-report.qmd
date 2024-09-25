@@ -1,0 +1,34 @@
+---
+title: "this is one of my first"
+author: "tca"
+format: html
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r }
+#| eval: true
+#| message: false
+
+# Loading packages
+library(tidyverse)
+```
+
+
+```{r}
+
+# Importing data
+
+data("mtcars")
+head(mtcars)
+
+```
+
+Let's now create a **plot**:
+
+```{r}
+mtcars %>% 
+  ggplot(aes(y = mpg, x = hp)) +
+  geom_point()
+```
+
