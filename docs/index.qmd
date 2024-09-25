@@ -4,6 +4,8 @@ author: "Thiago Almeida"
 format: html
 ---
 
+# Introduction
+
 ```{r libraries}
 #| message: false
 #| include: false
@@ -12,9 +14,9 @@ format: html
 library(tidyverse)
 ```
 
-Let's use Scopus database to explore some potencialities of Quarto.
+Let's use *Scopus* database to explore some potential outcomes of Quarto.
 
-This database can be accessed in the main GitHub page from the project ([clicking here][https://github.com/MPIDR/Global-flows-and-rates-of-international-migration-of-scholars]).
+This database can be accessed in the main GitHub page from the project ([click here](https://github.com/MPIDR/Global-flows-and-rates-of-international-migration-of-scholars)).
 
 ```{r load_data}
 #| message: false
