@@ -35,7 +35,7 @@ head(data)
 
 ## Flows over time
 
-One of the possible questions to be answered is how is the behaviour of these flows over time when we think about outflows. The first step is to analyze the outflows based on the origin region of flow over time. The graphic below describes this relationship.
+One of the possible questions to be answered is how is the behavior of these flows over time when we think about outflows. The first step is to analyze the outflows based on the origin region of flow over time. The graphic below describes this relationship.
 
 ```{r}
 #| echo: false
