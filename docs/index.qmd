@@ -23,7 +23,12 @@ This database can be accessed in the main GitHub page from the project ([click h
 #| include: false
 
 # Loading data from SCOPUS database
-data <- read_csv("../data_processed/scopus_2024_V1_scholarlymigration_countryflows_enriched.csv")
+# EK comment: putting the index.qmd in the docs folder leads to side effects (at least by default, if you do not customise how the relative paths are handeled)
+# The path below does may not work in interactive mode, as usually RStudio (and VScode/Positron) assumes that the working directory is the root of the project, but when you render the document the path works.
+# To make things work you can use the 'here' package and remove the '../' from the path. This way you can keep the qmd file in a subfolder (not necessary in the docs folder), e.g. in a 'reports' folder. When using the 'here' package, the path relative to the working directory works in both intereactive mode and in render to html/pdf mode.
+# In this case, keeping the qmd in the root of the repository and just using the data ath realatiuve to the root of the repository would work just fine.
+
+data <- read_csv(here::here("data_processed/scopus_2024_V1_scholarlymigration_countryflows_enriched.csv"))
 
 ```
 
@@ -67,3 +72,49 @@ tab %>%
 ```
 
 Migrant flows have origin, mainly, in Europe and Central Asia, followed by North America, East Asia, and the Pacific. Although the relative importance of these regions for the global migrant flows remained similar over time, it is possible to see that Europe and Central Asia increased more than others since 2004-2005.
+
+EK comment: It might make more sense to look at the flows relative to the population of each region. And you even have a column for that in the data.
+
+```{r}
+glimpse(data |> select(populationfrom, populationto))
+```
+
+
+```{r}
+tab2 <- data |> 
+  group_by(year, regionfrom) |>
+  summarise(
+    n = sum(n_migrations),
+    pop = sum(populationfrom),
+    ..groups = "drop") |>
+  mutate(
+    n_pct = round(n / pop * 10000000, 45),
+    regionfrom = as.factor(regionfrom)
+  )
+
+
+
+library(directlabels) # for line labels instead of legend
+
+plot2 <- ggplot(tab2) +
+  aes(x = year, y = n_pct, color = regionfrom, group = regionfrom) +
+  geom_line() +
+  scale_x_continuous(breaks = seq(min(tab2$year), max(tab2$year), 2), limits = c(min(tab2$year), max(tab2$year)+7)) +
+  theme_linedraw() +
+  labs(
+    color = NULL, # Remove the legend title
+    x = "Year",
+    y = "Number of academic migrants per 10 entmillion population",
+    title = "Scholar migrant flows by origin regions over time - World, 1998-2018.",
+    caption = "MPIDR, Scholarly Migration Database."
+  ) +
+  theme(
+    legend.position = "none", # Remove the legend
+    plot.title = element_text(face = "bold"),
+    plot.caption = element_text(hjust = 0),
+    plot.title.position = "plot",
+    plot.caption.position = "plot"
+  ) +
+  geom_dl(aes(label = regionfrom), method = "last.qp")
+plot2
+```
